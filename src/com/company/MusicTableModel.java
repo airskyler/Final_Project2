@@ -1,3 +1,13 @@
+// This SalesTableModel class is basically a function on the result set of the database
+// trying to add or insert information about the consignor's name, phone number and album's selling price
+// to the database in a Consignor column, phone column and Money owed column
+// for the use of a consignor Table data grid in a consignor Table GUI
+// Lots of the code in this class is a code example from the URL link of "https:github.com/minneapolis-edu/Movies"
+
+
+
+
+
 package com.company;
 
 import javax.swing.table.AbstractTableModel;
@@ -91,7 +101,7 @@ public class MusicTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int col){
         //Get from ResultSet metadata, which contains the database column names
-        //TODO translate DB column names into something nicer for display, so "YEAR_RELEASED" becomes "Year Released"
+
         try {
             return resultSet.getMetaData().getColumnName(col + 1);
         } catch (SQLException se) {
@@ -118,6 +128,8 @@ public class MusicTableModel extends AbstractTableModel {
 
 
     //returns true if successful, false if error occurs
+    // trying to add or insert information about the consignor's name, phone number and album's selling price
+    // to the database in a Consignor column, phone column and Money owed column
     public boolean insertRow(String consignor, int phone, double sellPrice) {
 
         try {
@@ -198,9 +210,5 @@ public class MusicTableModel extends AbstractTableModel {
         }
 
     }
-
-
-
-
 
 }

@@ -1,3 +1,15 @@
+
+// This AlbumInfo class is basically making a new frame for user to input a
+// information about the Consignor's name , phone number and money owed to the consignor,
+// and displaying the consignor table data grid. It also has a property names and
+// method for each button with a action Listener
+
+// it also has a button called addAlbum button ans AddSales button to display a
+// album table and sales table, if the button is clicked. if you click the exit button from the consignor table GUI frame
+// it will close the connection to the database
+
+
+
 package com.company;
 
 import javax.swing.*;
@@ -6,11 +18,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
  * Created by Jessy on 12/2/2015.
  */
+
+
+// Property name
 public class AlbumInfo extends JFrame implements WindowListener {
     private JTextField textConsignorName;
     private JTextField textPhoneNumber;
@@ -32,12 +48,13 @@ public class AlbumInfo extends JFrame implements WindowListener {
 
     private JLabel labMoneyOwed;
     private JTable consignorTable;
+    private JButton addAlbumButton;
+    private JButton addSalesButton;
+    private JButton past30DaysButton;
+    private JButton pastYearButton;
 
-    private ButtonGroup decision;
 
-
-
-
+    // making the MusicTableModel variable mtm as constant in this AlbumInfo class
     public AlbumInfo(final MusicTableModel mtm){
 
 
@@ -52,45 +69,13 @@ public class AlbumInfo extends JFrame implements WindowListener {
 
 
         consignorTable.setModel(mtm);
-        //Grid color default is white, change it so we can see it
+
+        // setting the grid color to black
         consignorTable.setGridColor(Color.BLACK);
-        //Also make the columns wider
+
+        // making the column wider
         consignorTable.getColumnModel().getColumn(0).setWidth(400);
 
-
-
-        // Making the radio button for having a choice to input sales information and consignor/Album ButtonGroup,
-        // so that only one radio button can be selected
-        decision = new ButtonGroup();
-        decision.add(consignorAlbumRadioButton);
-        decision.add(salesInformationRadioButton);
-
-
-
-
-        // ActionListener is listening to any change on consignor/Album radio button
-        consignorAlbumRadioButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                // if centralAC radio button is selected, set the visibility for the property
-                    textConsignorName.setVisible(true);
-                    textPhoneNumber.setVisible(true);
-
-                    textMoneyOwed.setVisible(true);
-                    labCosignorName.setVisible(true);
-                    labPhoneNumber.setVisible(true);
-
-                    labMoneyOwed.setVisible(true);
-
-                    textSoldDate.setVisible(false);
-                    labelSoldDate.setVisible(false);
-                    textSoldPrice.setVisible(false);
-                    labelSoldPrice.setVisible(false);
-
-
-            }
-        });
 
 
 
@@ -101,27 +86,9 @@ public class AlbumInfo extends JFrame implements WindowListener {
         //MusicDataBase.addConsignor(consignor, phoneNumber);
 
 
-        salesInformationRadioButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                textConsignorName.setVisible(false);
-                textPhoneNumber.setVisible(false);
 
-                textMoneyOwed.setVisible(false);
-                labCosignorName.setVisible(false);
-                labPhoneNumber.setVisible(false);
-
-                labMoneyOwed.setVisible(false);
-
-                textSoldDate.setVisible(true);
-                labelSoldDate.setVisible(true);
-                textSoldPrice.setVisible(true);
-                labelSoldPrice.setVisible(true);
-
-
-
-            }
-        });
+        // if you click the exit button on the Consignor table gui frame, it will
+        // close the connection to the database and close the frame
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -133,12 +100,17 @@ public class AlbumInfo extends JFrame implements WindowListener {
         });
 
 
+        // if you click a add information button in a Consignor Table GUI, it will add the user input to the textBox
+        // for the information about Consignor's name, phone number and amount of money owed to consignor to the
+        // consignor table data grid
         addInformationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
                 String consignorData = textConsignorName.getText();
 
+                // store the user input data to the consignorData variable
+                // if the variable is empty, the dialog message will display to tell you to enter a consignor's name
                 if(consignorData == null || consignorData.trim().equals("")){
                     JOptionPane.showMessageDialog(rootPane, "Please enter consignor's name");
                     return;
@@ -146,6 +118,8 @@ public class AlbumInfo extends JFrame implements WindowListener {
 
 
 
+                // getting a user input for a consignor's phone number.
+                // it also checks to see, if the user entered a number for a user input
                 int phoneData;
 
                 try{
@@ -163,8 +137,8 @@ public class AlbumInfo extends JFrame implements WindowListener {
 
 
 
-
-
+                // getting a user input for a amount of money owed to a consignor
+                // it also checks to see, if the user entered a number for a user input
                 double sellPriceData = Double.parseDouble(textMoneyOwed.getText());
 
                 try{
@@ -177,8 +151,14 @@ public class AlbumInfo extends JFrame implements WindowListener {
 
 
 
+                // display a message for adding a user input data
                 System.out.println("Adding " + consignorData+ " "+ phoneData+ " "+ sellPriceData);
 
+
+
+                // if all the user input for the data is usable to insert a row in a Music Table variable mtm,
+                // it will make the boolean variable of " insertRow" to true and loadAllMusic method is called in
+                // a MusicDataBase class to fill the data or update the data to a consignor Table result set
                 boolean insertedRow = mtm.insertRow(consignorData, phoneData, sellPriceData);
                 if(insertedRow){
 
@@ -192,6 +172,8 @@ public class AlbumInfo extends JFrame implements WindowListener {
 
 
 
+        // if one of the consignor table GUI data row is high lighted and click delete button
+        // it will delete that row
         deleteInformationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -208,20 +190,80 @@ public class AlbumInfo extends JFrame implements WindowListener {
 
 
 
+        // if clear button is clicked on consignor table,
+        // it will clear the textBox on the album table GUI
         clearButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
                 textConsignorName.setText("");
                 textPhoneNumber.setText("");
-
                 textMoneyOwed.setText("");
-                textSoldDate.setText("");
-                textSoldPrice.setText("");
+
 
             }
         });
 
+
+        // if addAlbumButton is clicked, it will load all the data for the album table
+        // and display the new frame for the album table GUI
+        addAlbumButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MusicDataBase.loadAllAlbum();
+                AlbumGUI albumGUI = new AlbumGUI(MusicDataBase.albumTableModel);
+            }
+        });
+
+
+        // if addSalesButton is clicked, it will load all the data for the sales table
+        // and display the new frame for the sales table GUI
+        addSalesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MusicDataBase.loadAllSales();
+                SalesGUI salesGUI = new SalesGUI(MusicDataBase.salesTableModel);
+            }
+        });
+
+
+
+        // if past 30 days button is clicked, it will display the
+        // dialog message box to notify the owner, which consignor name and
+        // album title is past 30 days.
+        past30DaysButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ArrayList<String> old = MusicDataBase.checkThirtyDays();
+                String message = "";
+                for (String info : old){
+
+                    message += info + "\n";
+                }
+                JOptionPane.showMessageDialog(rootPane, message);
+
+            }
+        });
+
+
+        // if past Year button is clicked, it will display the
+        // dialog message box to notify the owner, which consignor name and
+        // album title is past year.
+        pastYearButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                ArrayList<String> yearOld = MusicDataBase.checkYear();
+                String messageYear = "";
+                for (String info : yearOld){
+
+                    messageYear += info + "\n";
+                }
+                JOptionPane.showMessageDialog(rootPane,messageYear);
+
+
+            }
+        });
     }
 
 

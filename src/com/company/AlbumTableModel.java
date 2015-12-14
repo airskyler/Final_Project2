@@ -1,8 +1,18 @@
+// This AlbumTableModel class is basically a function on the result set of the database
+// it can add and update the data in database for certain column of data like
+// Title column, artist column, selling price column and Consignor ID
+// for the use of a album Table data grid in a Album Table GUI
+// Lots of the code in this class is a code example from the URL link of "https:github.com/minneapolis-edu/Movies"
+
+
+
 package com.company;
 
 import javax.swing.table.AbstractTableModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Jessy on 12/7/2015.
@@ -11,6 +21,7 @@ public class AlbumTableModel extends AbstractTableModel {
     ResultSet resultSet;
     int numberOfRows= 0;
     int numberOfColumns = 0;
+
 
 
     //Constructor - use a ResultSet to work out how many rows and columns we have.
@@ -57,6 +68,42 @@ public class AlbumTableModel extends AbstractTableModel {
     }
 
 
+    //returns true if successful, false if error occurs
+    // method for trying to insert Album information in a database to Title column, artist column, selling price column and Consignor ID
+    public boolean insertAlbum(String title, String artist, double sellPrice, int id) {
+
+        try {
+            //Move to insert row, insert the appropriate data in each column, insert the row, move cursor back to where it was before we started
+            resultSet.moveToInsertRow();
+
+            resultSet.updateString(MusicDataBase.Title_COLUMN, title);
+            resultSet.updateString(MusicDataBase.Artist_COLUMN, artist);
+            resultSet.updateDouble(MusicDataBase.Selling_Price_COLUMN, sellPrice);
+            resultSet.updateInt("ConsignorID", id);
+
+            java.sql.Date currentSQL = new java.sql.Date(System.currentTimeMillis());
+
+            // using current date to store the date data to database for Date received column
+            resultSet.updateDate(MusicDataBase.Date_Received_COLUMN, currentSQL);
+
+            resultSet.insertRow();
+            resultSet.moveToCurrentRow();
+            fireTableDataChanged();
+            //This change goes to DB but is *not* reflected in this result set
+            //So need to close and re-open result set to see latest data
+            //Return true to the calling method so we know that the ResultSet
+            //was successfully updated, and it can request a new ResultSet for this tablemodel.
+            return true;
+
+        } catch (SQLException e) {
+            System.out.println("Error adding row");
+            System.out.println(e);
+            return false;
+        }
+
+    }
+
+
     @Override
     public int getRowCount() {
         countRows();
@@ -67,6 +114,7 @@ public class AlbumTableModel extends AbstractTableModel {
     public int getColumnCount() {
         return numberOfColumns;
     }
+
 
     @Override
     //Fetch value for the cell at (row, col).
@@ -90,7 +138,7 @@ public class AlbumTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int col){
         //Get from ResultSet metadata, which contains the database column names
-        //TODO translate DB column names into something nicer for display, so "YEAR_RELEASED" becomes "Year Released"
+
         try {
             return resultSet.getMetaData().getColumnName(col + 1);
         } catch (SQLException se) {
